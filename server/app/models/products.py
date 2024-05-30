@@ -1,0 +1,9 @@
+from pydantic import BaseModel
+
+class Product(BaseModel):
+    name:str
+    description:str
+    price:float
+    stock:float
+    minimum:float
+    status:bool
