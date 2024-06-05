@@ -22,17 +22,6 @@ app.include_router(address_router, prefix="/address", tags=["Address"])
 app.include_router(profile_router, prefix="/profiles", tags=["Profiles"])
 
 
-from pymongo import MongoClient
-
-
-@app.post("/login/")
-async def login(username: str, password: str):
-    existing_user = users_collection.find_one({"username": username})
-    if existing_user and existing_user["password"] == password:
-        return {"message": "Login successful", "user_id": str(existing_user["_id"])}
-    else:
-        raise HTTPException(status_code=401, detail="Invalid credentials")
-    
 
 
 
