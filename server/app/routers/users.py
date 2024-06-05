@@ -56,7 +56,15 @@ async def get_user_id(id: str):
     
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
-
+        
+@router_user.post("/login/")
+async def login(username: str, password: str):
+    existing_user = users_collection.find_one({"username": username})
+    if existing_user and existing_user["password"] == password:
+        return {"message": "Login successful", "user_id": str(existing_user["_id"])}
+    else:
+        raise HTTPException(status_code=401, detail="Invalid credentials")
+        
 @router_user.post("/register/")
 async def register(user: User):
     if users_collection.find_one({"email": user.email}):
