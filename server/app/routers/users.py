@@ -65,6 +65,26 @@ async def login(username: str, password: str):
     else:
         raise HTTPException(status_code=401, detail="Invalid credentials")
         
+@router_user.post("/loginprofile/")
+async def login_profile(username: str, password: str):
+    existing_user = users_collection.find_one({"username": username})
+    address = addresses_collection.find_one({"user_id." + str(existing_user["_id"]): str(existing_user["_id"])})
+    if not address:
+        raise HTTPException(status_code=404, detail="Address not found for the user")
+
+    profile = profiles_collection.find_one({"user_id." + str(existing_user["_id"]): str(existing_user["_id"])})
+    if not profile:
+        raise HTTPException(status_code=404, detail="Profile not found for the user")
+
+    if existing_user and existing_user["password"] == password:
+        user_info = user_serial(existing_user)
+        user_info['address'] = address_serial(address)  # เพิ่ม address ลงในข้อมูลผู้ใช้
+        user_info['profile'] = profile_serial(profile)
+        # return {"message": "Login successful", "user_id": str(existing_user["_id"])}
+        return {"Profile":user_info}
+    else:
+        raise HTTPException(status_code=401, detail="Invalid credentials")
+
 @router_user.post("/register/")
 async def register(user: User):
     if users_collection.find_one({"email": user.email}):
