@@ -93,3 +93,19 @@ async def register(user: User):
     user_id = users_collection.insert_one(user_dict).inserted_id
     return {"message": "User registered successfully", "user_id": str(user_id)}
 
+@router_user.put("/{id}")
+async def update_user(id: str, user: User):
+    existing_user = users_collection.find_one({"_id": ObjectId(id)})
+    if existing_user:
+        users_collection.update_one({"_id": ObjectId(id)}, {"$set": user.dict()})
+        return {"message": "User updated successfully"}
+    else:
+        raise HTTPException(status_code=404, detail="User not found")
+
+@router_user.delete("/{id}")
+async def delete_user(id: str):
+    delete_result = users_collection.delete_one({"_id": ObjectId(id)})
+    if delete_result.deleted_count == 1:
+        return {"message": "User deleted successfully"}
+    else:
+        raise HTTPException(status_code=404, detail="User not found")
