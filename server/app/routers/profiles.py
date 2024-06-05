@@ -27,3 +27,9 @@ async def get_address():
     if not profile:
         raise HTTPException(status_code=404, detail="profiles not found")
     return profile
+    
+@profile_router.post("/profile/")
+async def add_profile(profile: Profile):
+    profile_dict = profile.dict()
+    profile_id = profiles_collection.insert_one(profile_dict).inserted_id
+    return {"message": "Profile added successfully", "profile_id": str(profile_id)}
