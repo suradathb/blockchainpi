@@ -7,4 +7,5 @@ class Address(BaseModel):
     street: str
     city: str
     state: str
-    zip_code: str
+    postal_code: str
+    country : str
