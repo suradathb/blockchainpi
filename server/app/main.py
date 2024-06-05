@@ -35,11 +35,5 @@ async def login(username: str, password: str):
     
 
 
-@app.post("/profile/")
-async def add_profile(profile: Profile):
-    profile_dict = profile.dict()
-    profile_id = profiles_collection.insert_one(profile_dict).inserted_id
-    return {"message": "Profile added successfully", "profile_id": str(profile_id)}
-
 
 
